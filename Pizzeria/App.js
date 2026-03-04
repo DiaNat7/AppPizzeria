@@ -1,7 +1,7 @@
 import React from 'react';
-import { StyleSheet } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { OrdersProvider } from './src/context/OrdersContext';
+import NavigationApp from './src/navigation/NavigationApp'; 
 
 export default function App() {
   return (
@@ -12,7 +12,6 @@ export default function App() {
     </OrdersProvider>
   );
 }
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
