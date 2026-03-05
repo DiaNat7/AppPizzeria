@@ -66,8 +66,8 @@ export default function OrdenarScreen({ navigation }) {
 
   const opcionesPizzas = [
     "Pato Especial",
-    "Patitos Pepperoni",
-    "Patos Hawaianos",
+    "Pato Pepperoni",
+    "Patitos Hawaianos",
   ];
   const opcionesTamanos = ["Chica (CH)", "Mediana (M)", "Grande (G)"];
 
