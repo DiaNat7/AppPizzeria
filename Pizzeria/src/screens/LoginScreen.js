@@ -6,6 +6,7 @@ import {
   Pressable,
   StyleSheet,
   ImageBackground,
+  BackHandler,
 } from "react-native";
 
 export default function LoginScreen({ navigation }) {
@@ -63,7 +64,7 @@ export default function LoginScreen({ navigation }) {
 
         <Pressable
           style={[styles.btn, styles.exit]}
-          onPress={() => navigation.replace("Login")}
+          onPress={() => BackHandler.exitApp()}
         >
           <Text style={styles.btnText}>EXIT</Text>
         </Pressable>
@@ -81,29 +82,28 @@ const styles = StyleSheet.create({
     paddingTop: 60,
     paddingHorizontal: 20,
     alignItems: "center",
-    // sin overlay oscuro para ver bien el patito 🐥
   },
   title: {
     fontSize: 18,
     fontWeight: "800",
     textAlign: "center",
     marginBottom: 20,
-    color: "#3b1f0a", // café oscuro
+    color: "#3b1f0a",
   },
   subtitle: {
     fontSize: 26,
     fontWeight: "700",
     marginVertical: 20,
-    color: "#3b1f0a", // café oscuro
+    color: "#3b1f0a",
   },
   input: {
     width: "100%",
     padding: 12,
     borderWidth: 1.5,
-    borderColor: "#c8a96e", // café dorado
+    borderColor: "#c8a96e",
     borderRadius: 10,
     marginBottom: 10,
-    backgroundColor: "rgba(255,245,220,0.85)", // crema semitransparente
+    backgroundColor: "rgba(255,245,220,0.85)",
     fontSize: 16,
     color: "#3b1f0a",
   },
@@ -120,12 +120,12 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     borderWidth: 1,
     borderColor: "#a0845c",
-    backgroundColor: "#c8860a", // naranja/café acorde al patito
+    backgroundColor: "#c8860a",
     width: "100%",
     alignItems: "center",
   },
   exit: {
-    backgroundColor: "#7a3b0a", // café oscuro para EXIT
+    backgroundColor: "#7a3b0a",
     alignSelf: "flex-end",
     marginTop: 30,
     width: "auto",
