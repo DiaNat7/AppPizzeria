@@ -10,18 +10,18 @@ import {
 
 const pizzas = [
   {
-    nombre: "Especial",
+    nombre: "PatiEspecial",
     descripcion:
       "Nuestra pizza estrella con ingredientes especiales de la casa",
     precios: { Chica: "$100", Mediana: "$150", Grande: "$200" },
   },
   {
-    nombre: "Pepperoni",
+    nombre: "Pato Pepperoni",
     descripcion: "Clásica y deliciosa, cargada de pepperoni y queso derretido",
     precios: { Chica: "$100", Mediana: "$150", Grande: "$200" },
   },
   {
-    nombre: "PatiHawaianos",
+    nombre: "Patitos Hawaianos",
     descripcion:
       "El toque dulce del piñón con jamón y queso sobre salsa de tomate",
     precios: { Chica: "$100", Mediana: "$150", Grande: "$200" },
