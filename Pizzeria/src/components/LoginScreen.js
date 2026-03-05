@@ -7,6 +7,7 @@ import {
   StyleSheet,
   ImageBackground,
   BackHandler,
+  Alert,
 } from "react-native";
 
 export default function LoginScreen({ navigation }) {
@@ -27,6 +28,17 @@ export default function LoginScreen({ navigation }) {
     } else {
       setError("Usuario o contraseña incorrectos");
     }
+  };
+
+  const onExit = () => {
+    Alert.alert("Salir", "¿Deseas salir de la aplicación?", [
+      { text: "Cancelar", style: "cancel" },
+      {
+        text: "Salir",
+        style: "destructive",
+        onPress: () => BackHandler.exitApp(),
+      },
+    ]);
   };
 
   return (
@@ -62,10 +74,7 @@ export default function LoginScreen({ navigation }) {
           <Text style={styles.btnText}>Iniciar Sesión</Text>
         </Pressable>
 
-        <Pressable
-          style={[styles.btn, styles.exit]}
-          onPress={() => BackHandler.exitApp()}
-        >
+        <Pressable style={[styles.btn, styles.exit]} onPress={onExit}>
           <Text style={styles.btnText}>EXIT</Text>
         </Pressable>
       </View>
