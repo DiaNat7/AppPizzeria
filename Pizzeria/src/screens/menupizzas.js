@@ -1,121 +1,34 @@
-import React, { useState } from "react";
+import React from "react";
 import {
   View,
   Text,
-  TextInput,
+  ScrollView,
   Pressable,
   StyleSheet,
-  Alert,
-  ScrollView,
-  Modal,
   ImageBackground,
 } from "react-native";
-import { useOrders } from "../context/OrdersContext";
 
-const CustomComboBox = ({ label, options, value, onSelect, placeholder }) => {
-  const [modalVisible, setModalVisible] = useState(false);
+const pizzas = [
+  {
+    nombre: "Especial",
+    descripcion:
+      "Nuestra pizza estrella con ingredientes especiales de la casa",
+    precios: { Chica: "$100", Mediana: "$150", Grande: "$200" },
+  },
+  {
+    nombre: "Pepperoni",
+    descripcion: "Clásica y deliciosa, cargada de pepperoni y queso derretido",
+    precios: { Chica: "$100", Mediana: "$150", Grande: "$200" },
+  },
+  {
+    nombre: "PatiHawaianos",
+    descripcion:
+      "El toque dulce del piñón con jamón y queso sobre salsa de tomate",
+    precios: { Chica: "$100", Mediana: "$150", Grande: "$200" },
+  },
+];
 
-  return (
-    <View style={styles.comboContainer}>
-      <Text style={styles.label}>{label}</Text>
-      <Pressable style={styles.input} onPress={() => setModalVisible(true)}>
-        <Text style={{ color: value ? "#5a3e1b" : "#aaa", fontSize: 16 }}>
-          {value || placeholder}
-        </Text>
-      </Pressable>
-
-      <Modal transparent={true} visible={modalVisible} animationType="fade">
-        <Pressable
-          style={styles.modalOverlay}
-          onPress={() => setModalVisible(false)}
-        >
-          <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>Selecciona una opción</Text>
-            {options.map((opcion, index) => (
-              <Pressable
-                key={index}
-                style={styles.modalOption}
-                onPress={() => {
-                  onSelect(opcion);
-                  setModalVisible(false);
-                }}
-              >
-                <Text style={styles.modalOptionText}>{opcion}</Text>
-              </Pressable>
-            ))}
-            <Pressable
-              style={styles.modalCancel}
-              onPress={() => setModalVisible(false)}
-            >
-              <Text style={styles.modalCancelText}>Cancelar</Text>
-            </Pressable>
-          </View>
-        </Pressable>
-      </Modal>
-    </View>
-  );
-};
-
-export default function OrdenarScreen({ navigation }) {
-  const [tipo, setTipo] = useState("");
-  const [tamano, setTamano] = useState("");
-  const [cantidad, setCantidad] = useState("");
-  const [cargando, setCargando] = useState(false);
-
-  const { addOrder } = useOrders();
-
-  const opcionesPizzas = [
-    "Pato Especial",
-    "Patitos Peperoni",
-    "Patos Hawaianos",
-  ];
-  const opcionesTamanos = ["Chica (CH)", "Mediana (M)", "Grande (G)"];
-
-  const validarCampos = () => {
-    if (tipo === "") {
-      Alert.alert("Error", "Falta seleccionar el tipo de pizza");
-      return false;
-    }
-    if (tamano === "") {
-      Alert.alert("Error", "Falta seleccionar el tamaño");
-      return false;
-    }
-    if (cantidad.trim() === "") {
-      Alert.alert("Error", "La cantidad no puede ir vacía");
-      return false;
-    }
-    const cantidadNum = parseInt(cantidad);
-    if (isNaN(cantidadNum) || cantidadNum <= 0) {
-      Alert.alert("Error", "La cantidad debe ser un número positivo");
-      return false;
-    }
-    return true;
-  };
-
-  const guardarOrden = () => {
-    if (!validarCampos()) return;
-    setCargando(true);
-    setTimeout(() => {
-      setCargando(false);
-      Alert.alert(
-        "Listo",
-        `Orden guardada:\n${cantidad} pizza(s) ${tamano} de ${tipo}`,
-        [
-          {
-            text: "OK",
-            onPress: () => {
-              setTipo("");
-              setTamano("");
-              setCantidad("");
-              navigation.navigate("Ordenes");
-            },
-          },
-        ],
-      );
-    }, 1000);
-    addOrder(tipo, tamano, cantidad);
-  };
-
+export default function MenuPizza({ navigation }) {
   return (
     <ImageBackground
       source={require("./patito2.jpg")}
@@ -123,61 +36,33 @@ export default function OrdenarScreen({ navigation }) {
       resizeMode="cover"
     >
       <ScrollView contentContainerStyle={styles.container}>
-        <Text style={styles.title}>PATIORDEN</Text>
+        <Text style={styles.title}>PATIMENU </Text>
+        <Text style={styles.subtitle}>¡Elige tu pizza favorita!</Text>
 
-        <View style={styles.card}>
-          <CustomComboBox
-            label="Tipo de pizza:"
-            placeholder="Toca para seleccionar..."
-            options={opcionesPizzas}
-            value={tipo}
-            onSelect={setTipo}
-          />
-          <CustomComboBox
-            label="Tamaño:"
-            placeholder="Toca para seleccionar..."
-            options={opcionesTamanos}
-            value={tamano}
-            onSelect={setTamano}
-          />
-          <Text style={styles.label}>Cantidad:</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="Escribe cuántas (ej. 2)"
-            placeholderTextColor="#a89070"
-            value={cantidad}
-            onChangeText={(text) => setCantidad(text.replace(/[^0-9]/g, ""))}
-            keyboardType="numeric"
-          />
+        {pizzas.map((pizza, index) => (
+          <View key={index} style={styles.card}>
+            <Text style={styles.pizzaNombre}>{pizza.nombre}</Text>
+            <Text style={styles.pizzaDesc}>{pizza.descripcion}</Text>
+
+            <View style={styles.preciosRow}>
+              {Object.entries(pizza.precios).map(([tamano, precio]) => (
+                <View key={tamano} style={styles.precioBox}>
+                  <Text style={styles.tamanoText}>{tamano}</Text>
+                  <Text style={styles.precioText}>{precio}</Text>
+                </View>
+              ))}
+            </View>
+          </View>
+        ))}
+
+        <View style={styles.nota}>
+          <Text style={styles.notaText}>
+            Todos nuestros productos son frescos y hechos con amor
+          </Text>
         </View>
 
-        <View style={styles.botonesContainer}>
-          <Pressable
-            style={[styles.btn, styles.btnGuardar]}
-            onPress={guardarOrden}
-            disabled={cargando}
-          >
-            <Text style={styles.btnTexto}>
-              {cargando ? "GUARDANDO..." : "GUARDAR ORDEN"}
-            </Text>
-          </Pressable>
-          <Pressable
-            style={[styles.btn, styles.btnLimpiar]}
-            onPress={() => {
-              setTipo("");
-              setTamano("");
-              setCantidad("");
-            }}
-          >
-            <Text style={styles.btnTexto}>LIMPIAR</Text>
-          </Pressable>
-        </View>
-
-        <Pressable
-          style={styles.exit}
-          onPress={() => navigation.replace("Login")}
-        >
-          <Text style={styles.exitText}>SALIR</Text>
+        <Pressable style={styles.exit} onPress={() => navigation.goBack()}>
+          <Text style={styles.exitText}>← Volver</Text>
         </Pressable>
       </ScrollView>
     </ImageBackground>
@@ -190,127 +75,100 @@ const styles = StyleSheet.create({
   },
   container: {
     padding: 20,
-    paddingTop: 50,
+    paddingTop: 60,
     flexGrow: 1,
+    paddingBottom: 40,
   },
   title: {
     fontSize: 28,
-    fontWeight: "bold",
-    marginBottom: 30,
+    fontWeight: "800",
     textAlign: "center",
     color: "#5a3e1b",
+    marginBottom: 6,
+  },
+  subtitle: {
+    fontSize: 15,
+    textAlign: "center",
+    color: "#7a5c30",
+    marginBottom: 30,
+    fontWeight: "500",
   },
   card: {
     backgroundColor: "rgba(255, 240, 150, 0.82)",
-    padding: 20,
-    borderRadius: 15,
-    marginBottom: 25,
+    borderRadius: 16,
+    padding: 18,
+    marginBottom: 18,
     borderWidth: 1.5,
     borderColor: "#e8c84a",
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
-    shadowRadius: 8,
-    elevation: 5,
+    shadowRadius: 6,
+    elevation: 4,
   },
-  label: {
-    fontSize: 16,
-    marginBottom: 5,
-    marginTop: 10,
-    color: "#5a3e1b",
-    fontWeight: "600",
-  },
-  input: {
-    borderWidth: 1.5,
-    borderColor: "#e8c84a",
-    borderRadius: 10,
-    padding: 14,
-    fontSize: 16,
-    backgroundColor: "rgba(255,252,220,0.9)",
-    color: "#5a3e1b",
-  },
-  comboContainer: {
-    marginBottom: 5,
-  },
-  modalOverlay: {
-    flex: 1,
-    backgroundColor: "rgba(0,0,0,0.5)",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  modalContent: {
-    backgroundColor: "#fffde7",
-    width: "80%",
-    borderRadius: 15,
-    padding: 20,
-    borderWidth: 1.5,
-    borderColor: "#e8c84a",
-    elevation: 5,
-  },
-  modalTitle: {
+  pizzaNombre: {
     fontSize: 18,
-    fontWeight: "bold",
-    marginBottom: 15,
-    textAlign: "center",
+    fontWeight: "800",
     color: "#5a3e1b",
+    marginBottom: 6,
   },
-  modalOption: {
-    paddingVertical: 15,
-    borderBottomWidth: 1,
-    borderBottomColor: "#e8c84a",
+  pizzaDesc: {
+    fontSize: 13,
+    color: "#7a5c30",
+    marginBottom: 14,
+    lineHeight: 18,
   },
-  modalOptionText: {
-    fontSize: 16,
-    textAlign: "center",
-    color: "#5a3e1b",
+  preciosRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    gap: 8,
   },
-  modalCancel: {
-    marginTop: 15,
-    paddingVertical: 12,
-    backgroundColor: "#e8a020",
+  precioBox: {
+    flex: 1,
+    backgroundColor: "rgba(255,252,220,0.9)",
     borderRadius: 10,
-  },
-  modalCancelText: {
-    color: "white",
-    textAlign: "center",
-    fontWeight: "bold",
-    fontSize: 16,
-  },
-  botonesContainer: {
-    gap: 12,
-    marginBottom: 20,
-  },
-  btn: {
-    padding: 15,
-    borderRadius: 10,
-    alignItems: "center",
     borderWidth: 1.5,
+    borderColor: "#e8c84a",
+    paddingVertical: 8,
+    alignItems: "center",
   },
-  btnGuardar: {
-    backgroundColor: "#e8a020",
-    borderColor: "#c47a10",
+  tamanoText: {
+    fontSize: 12,
+    color: "#7a5c30",
+    fontWeight: "600",
+    marginBottom: 2,
   },
-  btnLimpiar: {
-    backgroundColor: "rgba(255, 240, 150, 0.9)",
+  precioText: {
+    fontSize: 16,
+    fontWeight: "800",
+    color: "#c47a10",
+  },
+  nota: {
+    marginTop: 10,
+    marginBottom: 20,
+    backgroundColor: "rgba(255, 240, 150, 0.82)",
+    borderRadius: 12,
+    padding: 14,
+    borderWidth: 1.5,
     borderColor: "#e8c84a",
   },
-  btnTexto: {
+  notaText: {
+    textAlign: "center",
     color: "#5a3e1b",
-    fontWeight: "bold",
-    fontSize: 16,
+    fontSize: 13,
+    fontWeight: "500",
   },
   exit: {
-    marginTop: 30,
-    padding: 12,
-    borderRadius: 8,
-    alignItems: "center",
     backgroundColor: "#c47a10",
-    alignSelf: "flex-end",
-    width: "40%",
-    marginBottom: 30,
+    padding: 14,
+    borderRadius: 12,
+    alignItems: "center",
+    width: "50%",
+    alignSelf: "center",
   },
   exitText: {
     color: "white",
-    fontWeight: "600",
+    fontWeight: "700",
+    fontSize: 15,
   },
 });

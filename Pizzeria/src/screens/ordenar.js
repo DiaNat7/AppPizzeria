@@ -8,8 +8,53 @@ import {
   Alert,
   ScrollView,
   ImageBackground,
+  Modal,
 } from "react-native";
 import { useOrders } from "../context/OrdersContext";
+
+const CustomComboBox = ({ label, options, value, onSelect, placeholder }) => {
+  const [modalVisible, setModalVisible] = useState(false);
+
+  return (
+    <View style={styles.comboContainer}>
+      <Text style={styles.label}>{label}</Text>
+      <Pressable style={styles.input} onPress={() => setModalVisible(true)}>
+        <Text style={{ color: value ? "#5a3e1b" : "#aaa", fontSize: 16 }}>
+          {value || placeholder}
+        </Text>
+      </Pressable>
+
+      <Modal transparent={true} visible={modalVisible} animationType="fade">
+        <Pressable
+          style={styles.modalOverlay}
+          onPress={() => setModalVisible(false)}
+        >
+          <View style={styles.modalContent}>
+            <Text style={styles.modalTitle}>Selecciona una opción</Text>
+            {options.map((opcion, index) => (
+              <Pressable
+                key={index}
+                style={styles.modalOption}
+                onPress={() => {
+                  onSelect(opcion);
+                  setModalVisible(false);
+                }}
+              >
+                <Text style={styles.modalOptionText}>{opcion}</Text>
+              </Pressable>
+            ))}
+            <Pressable
+              style={styles.modalCancel}
+              onPress={() => setModalVisible(false)}
+            >
+              <Text style={styles.modalCancelText}>Cancelar</Text>
+            </Pressable>
+          </View>
+        </Pressable>
+      </Modal>
+    </View>
+  );
+};
 
 export default function OrdenarScreen({ navigation }) {
   const [tipo, setTipo] = useState("");
@@ -19,13 +64,20 @@ export default function OrdenarScreen({ navigation }) {
 
   const { addOrder } = useOrders();
 
+  const opcionesPizzas = [
+    "Pato Especial",
+    "Patitos Pepperoni",
+    "Patos Hawaianos",
+  ];
+  const opcionesTamanos = ["Chica (CH)", "Mediana (M)", "Grande (G)"];
+
   const validarCampos = () => {
-    if (tipo.trim() === "") {
-      Alert.alert("Error", "Falta escribir el tipo de pizza");
+    if (tipo === "") {
+      Alert.alert("Error", "Falta seleccionar el tipo de pizza");
       return false;
     }
-    if (tamano.trim() === "") {
-      Alert.alert("Error", "Pon el tamaño");
+    if (tamano === "") {
+      Alert.alert("Error", "Falta seleccionar el tamaño");
       return false;
     }
     if (cantidad.trim() === "") {
@@ -45,6 +97,7 @@ export default function OrdenarScreen({ navigation }) {
     setCargando(true);
     setTimeout(() => {
       setCargando(false);
+      addOrder(tipo, tamano, cantidad);
       Alert.alert(
         "Listo",
         `Orden guardada:\n${cantidad} pizza(s) ${tamano} de ${tipo}`,
@@ -55,13 +108,11 @@ export default function OrdenarScreen({ navigation }) {
               setTipo("");
               setTamano("");
               setCantidad("");
-              navigation.navigate("Ordenes");
             },
           },
         ],
       );
     }, 1000);
-    addOrder(tipo, tamano, cantidad);
   };
 
   return (
@@ -74,28 +125,24 @@ export default function OrdenarScreen({ navigation }) {
         <Text style={styles.title}>PATIORDEN</Text>
 
         <View style={styles.card}>
-          <Text style={styles.label}>Tipo de pizza:</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="ej. Pepperoni, Hawaiana, Mexicana"
-            placeholderTextColor="#a89070"
+          <CustomComboBox
+            label="Tipo de pizza:"
+            placeholder="Toca para seleccionar..."
+            options={opcionesPizzas}
             value={tipo}
-            onChangeText={setTipo}
+            onSelect={setTipo}
           />
-
-          <Text style={styles.label}>Tamaño:</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="chica / mediana / grande"
-            placeholderTextColor="#a89070"
+          <CustomComboBox
+            label="Tamaño:"
+            placeholder="Toca para seleccionar..."
+            options={opcionesTamanos}
             value={tamano}
-            onChangeText={setTamano}
+            onSelect={setTamano}
           />
-
           <Text style={styles.label}>Cantidad:</Text>
           <TextInput
             style={styles.input}
-            placeholder="solo números"
+            placeholder="Escribe cuántas (ej. 2)"
             placeholderTextColor="#a89070"
             value={cantidad}
             onChangeText={(text) => setCantidad(text.replace(/[^0-9]/g, ""))}
@@ -113,7 +160,6 @@ export default function OrdenarScreen({ navigation }) {
               {cargando ? "GUARDANDO..." : "GUARDAR ORDEN"}
             </Text>
           </Pressable>
-
           <Pressable
             style={[styles.btn, styles.btnLimpiar]}
             onPress={() => {
@@ -138,14 +184,8 @@ export default function OrdenarScreen({ navigation }) {
 }
 
 const styles = StyleSheet.create({
-  background: {
-    flex: 1,
-  },
-  container: {
-    padding: 20,
-    paddingTop: 50,
-    flexGrow: 1,
-  },
+  background: { flex: 1 },
+  container: { padding: 20, paddingTop: 50, flexGrow: 1 },
   title: {
     fontSize: 28,
     fontWeight: "bold",
@@ -177,34 +217,65 @@ const styles = StyleSheet.create({
     borderWidth: 1.5,
     borderColor: "#e8c84a",
     borderRadius: 10,
-    padding: 12,
+    padding: 14,
     fontSize: 16,
     backgroundColor: "rgba(255,252,220,0.9)",
     color: "#5a3e1b",
   },
-  botonesContainer: {
-    gap: 12,
-    marginBottom: 20,
+  comboContainer: { marginBottom: 5 },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: "rgba(0,0,0,0.5)",
+    justifyContent: "center",
+    alignItems: "center",
   },
+  modalContent: {
+    backgroundColor: "#fffde7",
+    width: "80%",
+    borderRadius: 15,
+    padding: 20,
+    borderWidth: 1.5,
+    borderColor: "#e8c84a",
+    elevation: 5,
+  },
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: "bold",
+    marginBottom: 15,
+    textAlign: "center",
+    color: "#5a3e1b",
+  },
+  modalOption: {
+    paddingVertical: 15,
+    borderBottomWidth: 1,
+    borderBottomColor: "#e8c84a",
+  },
+  modalOptionText: { fontSize: 16, textAlign: "center", color: "#5a3e1b" },
+  modalCancel: {
+    marginTop: 15,
+    paddingVertical: 12,
+    backgroundColor: "#e8a020",
+    borderRadius: 10,
+  },
+  modalCancelText: {
+    color: "white",
+    textAlign: "center",
+    fontWeight: "bold",
+    fontSize: 16,
+  },
+  botonesContainer: { gap: 12, marginBottom: 20 },
   btn: {
     padding: 15,
     borderRadius: 10,
     alignItems: "center",
     borderWidth: 1.5,
   },
-  btnGuardar: {
-    backgroundColor: "#e8a020",
-    borderColor: "#c47a10",
-  },
+  btnGuardar: { backgroundColor: "#e8a020", borderColor: "#c47a10" },
   btnLimpiar: {
     backgroundColor: "rgba(255, 240, 150, 0.9)",
     borderColor: "#e8c84a",
   },
-  btnTexto: {
-    color: "#5a3e1b",
-    fontWeight: "bold",
-    fontSize: 16,
-  },
+  btnTexto: { color: "#5a3e1b", fontWeight: "bold", fontSize: 16 },
   exit: {
     marginTop: 30,
     padding: 12,
@@ -215,8 +286,5 @@ const styles = StyleSheet.create({
     width: "40%",
     marginBottom: 30,
   },
-  exitText: {
-    color: "white",
-    fontWeight: "600",
-  },
+  exitText: { color: "white", fontWeight: "600" },
 });
