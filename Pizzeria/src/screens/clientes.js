@@ -10,7 +10,7 @@ export default function ClientesScreen({ navigation }) {
       <Text style={styles.title}>PATICLIENTES</Text>
 
       <View style={styles.spacerMid}/>
-      <Pressable style={styles.btn} onPress={() => navigation.navigate("Menu")} >
+      <Pressable style={styles.btn} onPress={() => navigation.navigate("MenuPizz")} >
         <Text style={styles.btnText}>MENÚ</Text>
       </Pressable>
       <Pressable style={styles.btn} onPress={() => navigation.navigate("Ordenar")} >

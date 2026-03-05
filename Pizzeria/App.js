@@ -1,4 +1,5 @@
 import React from 'react';
+import { StyleSheet } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { OrdersProvider } from './src/context/OrdersContext';
 import NavigationApp from './src/navigation/NavigationApp'; 

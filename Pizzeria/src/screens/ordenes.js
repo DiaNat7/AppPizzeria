@@ -1,15 +1,9 @@
 import React from "react";
-import {
-  View,
-  Text,
-  FlatList,
-  TouchableOpacity,
-  StyleSheet,
-  SafeAreaView,
-} from "react-native";
+import {View,Text,FlatList,TouchableOpacity,StyleSheet} from "react-native";
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useOrders } from "../context/OrdersContext";
 
-export default function ordenes({ navigation }) {
+export default function OrdenesScreen({ navigation }) {
   const { orders, clearOrders } = useOrders();
 
   const renderOrden = ({ item, index }) => (

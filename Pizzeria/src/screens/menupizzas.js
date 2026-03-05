@@ -1,74 +1,133 @@
 import React from "react";
-import { View, Text, Pressable, StyleSheet } from "react-native";
+import {View,Text,Pressable,StyleSheet,  ScrollView} from "react-native";
+import { SafeAreaView } from 'react-native-safe-area-context';
 
-export default function MenuPizzas({ navigation }) {
-  return (
-    <View style={styles.container}>
-      <Text style={styles.title}>PATIMENU</Text>
 
-      <Pressable
-        style={styles.btn}
-        onPress={() => navigation.navigate("Clientes")}
-      >
-        <Text style={styles.btnText}>PATICLIENTES</Text>
-      </Pressable>
-
-      <Pressable
-        style={styles.btn}
-        onPress={() => navigation.navigate("Empleados")}
-      >
-        <Text style={styles.btnText}>PATIEMPLEADOS</Text>
-      </Pressable>
-
-      <Pressable
-        style={styles.btn}
-        onPress={() => navigation.navigate("Nosotros")}
-      >
-        <Text style={styles.btnText}>PATINOSOTROS</Text>
-      </Pressable>
-
-      <Pressable
-        style={[styles.btn, styles.exit]}
-        onPress={() => navigation.replace("Login")}
-      >
-        <Text style={styles.btnText}>EXIT</Text>
-      </Pressable>
+const MenuPizza = ({ name, prices }) => (
+  <View style={styles.menuItemContainer}>
+    <Text style={styles.pizzaName}>{name}</Text>
+    <View style={styles.pricesRow}>
+      {prices.map((price, index) => (
+        <Text key={index} style={styles.priceText}>
+          {price}
+        </Text>
+      ))}
     </View>
+  </View>
+);
+
+export default function PizzaScreen({ navigation }) {
+  return (
+    <SafeAreaView style={styles.container}>
+      <ScrollView contentContainerStyle={styles.scrollContent}>
+        <Text style={styles.mainTitle}>MENÚ PATIPIZZAS</Text>
+
+        <View style={styles.card}>
+          <Text style={styles.sectionTitle}>Nuestras Especialidades:</Text>
+
+          <MenuPizza
+            name="Pato Especial:"
+            prices={["$230 G", "$180 M", "$150 CH"]}
+          />
+          <View style={styles.divider} />
+
+          <MenuPizza
+            name="Patitos Peperoni:"
+            prices={["$200 G", "$160 M", "$130 CH"]}
+          />
+          <View style={styles.divider} />
+
+          <MenuPizza
+            name="Patos Hawaianos:"
+            prices={["$210 G", "$170 M", "$140 CH"]}
+          />
+        </View>
+
+        <View style={styles.footer}>
+          <Pressable
+            style={styles.exitBtn}
+            onPress={() => navigation.replace("Login")}
+          >
+            <Text style={styles.exitText}>EXIT</Text>
+          </Pressable>
+        </View>
+      </ScrollView>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingTop: 70,
-    paddingHorizontal: 20,
-    alignItems: "center",
     backgroundColor: "#f8f8f8",
   },
-  title: {
-    fontSize: 22,
+  scrollContent: {
+    flexGrow: 1,
+    paddingHorizontal: 20,
+    paddingTop: 50,
+    paddingBottom: 20,
+  },
+  mainTitle: {
+    fontSize: 26,
     fontWeight: "800",
-    marginBottom: 25,
-    color: "#2c3e50",
+    color: "#323232",
+    textAlign: "center",
+    marginBottom: 30,
   },
-  btn: {
-    width: "100%",
-    padding: 14,
-    borderWidth: 1,
-    borderColor: "#ccc",
-    borderRadius: 12,
-    marginBottom: 14,
-    alignItems: "center",
+  card: {
     backgroundColor: "white",
+    padding: 24,
+    borderRadius: 15,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 5,
   },
-  exit: {
+  sectionTitle: {
+    fontSize: 18,
+    fontWeight: "bold",
+    color: "black",
+    marginBottom: 20,
+  },
+  menuItemContainer: {
+    marginBottom: 10,
+  },
+  pizzaName: {
+    fontSize: 16,
+    fontWeight: "600",
+    color: "darkgray",
+    marginBottom: 6,
+  },
+  pricesRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
+  priceText: {
+    fontSize: 16,
+    color: "darkgray",
+  },
+  divider: {
+    height: 1,
+    backgroundColor: "#eee",
+    marginVertical: 15,
+  },
+  footer: {
+    flex: 1,
+    justifyContent: "flex-end",
+    alignItems: "center", // En tu Compose lo tenías centrado, lo mantuve así
+    marginTop: 40,
+  },
+  exitBtn: {
     backgroundColor: "#e74c3c",
-    borderColor: "#c0392b",
-    marginTop: 20,
+    paddingVertical: 12,
+    paddingHorizontal: 40,
+    borderRadius: 12,
   },
-  btnText: {
-    fontWeight: "700",
+  exitText: {
+    color: "white",
+    fontWeight: "bold",
     fontSize: 15,
-    color: "#2c3e50",
+    textAlign: "center",
   },
 });

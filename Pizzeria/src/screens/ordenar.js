@@ -1,16 +1,8 @@
 import React, { useState } from "react";
-import {
-  View,
-  Text,
-  TextInput,
-  Pressable,
-  StyleSheet,
-  Alert,
-  ScrollView,
-} from "react-native";
+import {View, Text, TextInput, Pressable, StyleSheet, Alert, ScrollView} from "react-native";
 import { useOrders } from "../context/OrdersContext";
 
-const OrdenarScreen = ({ navigation }) => {
+export default function OrdenarScreen({ navigation }) {
   const [tipo, setTipo] = useState("");
   const [tamano, setTamano] = useState("");
   const [cantidad, setCantidad] = useState("");

@@ -20,7 +20,9 @@ export default function LoginScreen({ navigation }) {
       setError("Usuario o contraseña incorrectos");
     }
   };
-
+  const salirDeLaApp = () => {
+    BackHandler.exitApp();
+  };
   return (
     <View style={styles.container}>
       <View style={styles.content}>
