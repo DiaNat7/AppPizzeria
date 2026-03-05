@@ -65,7 +65,7 @@ export default function OrdenarScreen({ navigation }) {
   const { addOrder } = useOrders();
 
   const opcionesPizzas = [
-    "Pato Especial",
+    "PatiEspecial",
     "Pato Pepperoni",
     "Patitos Hawaianos",
   ];
