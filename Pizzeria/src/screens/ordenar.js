@@ -1,5 +1,14 @@
 import React, { useState } from "react";
-import {View, Text, TextInput, Pressable, StyleSheet, Alert, ScrollView} from "react-native";
+import {
+  View,
+  Text,
+  TextInput,
+  Pressable,
+  StyleSheet,
+  Alert,
+  ScrollView,
+  ImageBackground,
+} from "react-native";
 import { useOrders } from "../context/OrdersContext";
 
 export default function OrdenarScreen({ navigation }) {
@@ -23,23 +32,17 @@ export default function OrdenarScreen({ navigation }) {
       Alert.alert("Error", "La cantidad no puede ir vacía");
       return false;
     }
-
     const cantidadNum = parseInt(cantidad);
     if (isNaN(cantidadNum) || cantidadNum <= 0) {
       Alert.alert("Error", "La cantidad debe ser un número positivo");
       return false;
     }
-
     return true;
   };
 
   const guardarOrden = () => {
-    if (!validarCampos()) {
-      return;
-    }
-
+    if (!validarCampos()) return;
     setCargando(true);
-
     setTimeout(() => {
       setCargando(false);
       Alert.alert(
@@ -58,82 +61,89 @@ export default function OrdenarScreen({ navigation }) {
         ],
       );
     }, 1000);
-
     addOrder(tipo, tamano, cantidad);
   };
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.title}>PATIORDEN</Text>
+    <ImageBackground
+      source={require("./patito2.jpg")}
+      style={styles.background}
+      resizeMode="cover"
+    >
+      <ScrollView contentContainerStyle={styles.container}>
+        <Text style={styles.title}>PATIORDEN</Text>
 
-      <View style={styles.card}>
-        <Text style={styles.label}>Tipo de pizza:</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="ej. Pepperoni, Hawaiana, Mexicana"
-          value={tipo}
-          onChangeText={setTipo}
-        />
+        <View style={styles.card}>
+          <Text style={styles.label}>Tipo de pizza:</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="ej. Pepperoni, Hawaiana, Mexicana"
+            placeholderTextColor="#a89070"
+            value={tipo}
+            onChangeText={setTipo}
+          />
 
-        <Text style={styles.label}>Tamaño:</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="chica / mediana / grande"
-          value={tamano}
-          onChangeText={setTamano}
-        />
+          <Text style={styles.label}>Tamaño:</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="chica / mediana / grande"
+            placeholderTextColor="#a89070"
+            value={tamano}
+            onChangeText={setTamano}
+          />
 
-        <Text style={styles.label}>Cantidad:</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="solo números"
-          value={cantidad}
-          onChangeText={(text) => {
-            const soloNumeros = text.replace(/[^0-9]/g, "");
-            setCantidad(soloNumeros);
-          }}
-          keyboardType="numeric"
-        />
-      </View>
+          <Text style={styles.label}>Cantidad:</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="solo números"
+            placeholderTextColor="#a89070"
+            value={cantidad}
+            onChangeText={(text) => setCantidad(text.replace(/[^0-9]/g, ""))}
+            keyboardType="numeric"
+          />
+        </View>
 
-      <View style={styles.botonesContainer}>
+        <View style={styles.botonesContainer}>
+          <Pressable
+            style={[styles.btn, styles.btnGuardar]}
+            onPress={guardarOrden}
+            disabled={cargando}
+          >
+            <Text style={styles.btnTexto}>
+              {cargando ? "GUARDANDO..." : "GUARDAR ORDEN"}
+            </Text>
+          </Pressable>
+
+          <Pressable
+            style={[styles.btn, styles.btnLimpiar]}
+            onPress={() => {
+              setTipo("");
+              setTamano("");
+              setCantidad("");
+            }}
+          >
+            <Text style={styles.btnTexto}>LIMPIAR</Text>
+          </Pressable>
+        </View>
+
         <Pressable
-          style={[styles.btn, styles.btnGuardar]}
-          onPress={guardarOrden}
-          disabled={cargando}
+          style={styles.exit}
+          onPress={() => navigation.replace("Login")}
         >
-          <Text style={styles.btnTexto}>
-            {cargando ? "GUARDANDO..." : "GUARDAR ORDEN"}
-          </Text>
+          <Text style={styles.exitText}>SALIR</Text>
         </Pressable>
-
-        <Pressable
-          style={[styles.btn, styles.btnLimpiar]}
-          onPress={() => {
-            setTipo("");
-            setTamano("");
-            setCantidad("");
-          }}
-        >
-          <Text>LIMPIAR</Text>
-        </Pressable>
-      </View>
-
-      <Pressable
-        style={styles.exit}
-        onPress={() => navigation.replace("Login")}
-      >
-        <Text style={styles.exitText}>SALIR</Text>
-      </Pressable>
-    </ScrollView>
+      </ScrollView>
+    </ImageBackground>
   );
-};
+}
 
 const styles = StyleSheet.create({
+  background: {
+    flex: 1,
+  },
   container: {
     padding: 20,
     paddingTop: 50,
-    backgroundColor: "#f8f8f8",
     flexGrow: 1,
   },
   title: {
@@ -141,13 +151,15 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     marginBottom: 30,
     textAlign: "center",
-    color: "#2c3e50",
+    color: "#5a3e1b",
   },
   card: {
-    backgroundColor: "white",
+    backgroundColor: "rgba(255, 240, 150, 0.82)",
     padding: 20,
     borderRadius: 15,
     marginBottom: 25,
+    borderWidth: 1.5,
+    borderColor: "#e8c84a",
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
@@ -158,16 +170,17 @@ const styles = StyleSheet.create({
     fontSize: 16,
     marginBottom: 5,
     marginTop: 10,
-    color: "#34495e",
-    fontWeight: "500",
+    color: "#5a3e1b",
+    fontWeight: "600",
   },
   input: {
-    borderWidth: 1,
-    borderColor: "#ddd",
+    borderWidth: 1.5,
+    borderColor: "#e8c84a",
     borderRadius: 10,
     padding: 12,
     fontSize: 16,
-    backgroundColor: "#fafafa",
+    backgroundColor: "rgba(255,252,220,0.9)",
+    color: "#5a3e1b",
   },
   botonesContainer: {
     gap: 12,
@@ -177,19 +190,18 @@ const styles = StyleSheet.create({
     padding: 15,
     borderRadius: 10,
     alignItems: "center",
-    borderWidth: 1,
-    borderColor: "#ccc",
+    borderWidth: 1.5,
   },
   btnGuardar: {
-    backgroundColor: "#27ae60",
-    borderColor: "#229954",
+    backgroundColor: "#e8a020",
+    borderColor: "#c47a10",
   },
   btnLimpiar: {
-    backgroundColor: "#f39c12",
-    borderColor: "#e67e22",
+    backgroundColor: "rgba(255, 240, 150, 0.9)",
+    borderColor: "#e8c84a",
   },
   btnTexto: {
-    color: "white",
+    color: "#5a3e1b",
     fontWeight: "bold",
     fontSize: 16,
   },
@@ -198,17 +210,13 @@ const styles = StyleSheet.create({
     padding: 12,
     borderRadius: 8,
     alignItems: "center",
-    backgroundColor: "#e74c3c",
+    backgroundColor: "#c47a10",
+    alignSelf: "flex-end",
+    width: "40%",
+    marginBottom: 30,
   },
   exitText: {
     color: "white",
     fontWeight: "600",
-  },
-  note: {
-    marginTop: 20,
-    color: "#95a5a6",
-    fontSize: 12,
-    textAlign: "center",
-    fontStyle: "italic",
   },
 });

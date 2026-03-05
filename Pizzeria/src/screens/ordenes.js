@@ -1,6 +1,13 @@
 import React from "react";
-import {View,Text,FlatList,TouchableOpacity,StyleSheet} from "react-native";
-import { SafeAreaView } from 'react-native-safe-area-context';
+import {
+  View,
+  Text,
+  FlatList,
+  TouchableOpacity,
+  StyleSheet,
+  ImageBackground,
+} from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { useOrders } from "../context/OrdersContext";
 
 export default function OrdenesScreen({ navigation }) {
@@ -25,49 +32,59 @@ export default function OrdenesScreen({ navigation }) {
   );
 
   return (
-    <SafeAreaView style={styles.screen}>
-      <Text style={styles.title}>Órdenes del día</Text>
-      <Text style={styles.subtitle}>
-        {orders.length === 0
-          ? "Sin órdenes por ahora"
-          : `${orders.length} orden(es) registrada(s)`}
-      </Text>
+    <ImageBackground
+      source={require("./patito2.jpg")}
+      style={styles.background}
+      resizeMode="cover"
+    >
+      <SafeAreaView style={styles.screen}>
+        <Text style={styles.title}>Órdenes del día</Text>
+        <Text style={styles.subtitle}>
+          {orders.length === 0
+            ? "Sin órdenes por ahora"
+            : `${orders.length} orden(es) registrada(s)`}
+        </Text>
 
-      <FlatList
-        data={orders}
-        keyExtractor={(item) => item.id}
-        renderItem={renderOrden}
-        ListEmptyComponent={
-          <View style={styles.empty}>
-            <Text style={styles.emptyText}>No hay pedidos todavía</Text>
-          </View>
-        }
-        contentContainerStyle={{ paddingBottom: 20 }}
-      />
+        <FlatList
+          data={orders}
+          keyExtractor={(item) => item.id}
+          renderItem={renderOrden}
+          ListEmptyComponent={
+            <View style={styles.empty}>
+              <Text style={styles.emptyText}>No hay pedidos todavía</Text>
+            </View>
+          }
+          contentContainerStyle={{ paddingBottom: 20 }}
+        />
 
-      <View style={styles.footer}>
-        <TouchableOpacity
-          style={[styles.btn, styles.btnSecondary]}
-          onPress={() => navigation.navigate("Menu")}
-        >
-          <Text style={styles.btnText}>← Volver</Text>
-        </TouchableOpacity>
+        <View style={styles.footer}>
+          <TouchableOpacity
+            style={[styles.btn, styles.btnSecondary]}
+            onPress={() => navigation.navigate("Menu")}
+          >
+            <Text style={styles.btnText}>← Volver</Text>
+          </TouchableOpacity>
 
-        <TouchableOpacity
-          style={[styles.btn, styles.btnDanger]}
-          onPress={clearOrders}
-        >
-          <Text style={[styles.btnText, { color: "white" }]}>Limpiar todo</Text>
-        </TouchableOpacity>
-      </View>
-    </SafeAreaView>
+          <TouchableOpacity
+            style={[styles.btn, styles.btnDanger]}
+            onPress={clearOrders}
+          >
+            <Text style={[styles.btnText, { color: "white" }]}>
+              Limpiar todo
+            </Text>
+          </TouchableOpacity>
+        </View>
+      </SafeAreaView>
+    </ImageBackground>
   );
 }
 
 const styles = StyleSheet.create({
+  background: {
+    flex: 1,
+  },
   screen: {
     flex: 1,
-    backgroundColor: "#f9f9f9",
     paddingHorizontal: 20,
     paddingTop: 20,
   },
@@ -75,18 +92,21 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: "700",
     marginBottom: 4,
-    color: "#1a1a1a",
+    color: "#5a3e1b",
   },
   subtitle: {
     fontSize: 14,
-    color: "#888",
+    color: "#7a5c30",
     marginBottom: 20,
+    fontWeight: "500",
   },
   card: {
-    backgroundColor: "#fff",
+    backgroundColor: "rgba(255, 240, 150, 0.82)",
     borderRadius: 14,
     padding: 16,
     marginBottom: 12,
+    borderWidth: 1.5,
+    borderColor: "#e8c84a",
     shadowColor: "#000",
     shadowOpacity: 0.06,
     shadowRadius: 6,
@@ -95,7 +115,7 @@ const styles = StyleSheet.create({
   cardNum: {
     fontSize: 13,
     fontWeight: "600",
-    color: "#aaa",
+    color: "#c47a10",
     marginBottom: 8,
   },
   cardRow: {
@@ -104,13 +124,13 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
   label: {
-    color: "#555",
+    color: "#7a5c30",
     fontSize: 14,
   },
   value: {
     fontWeight: "600",
     fontSize: 14,
-    color: "#1a1a1a",
+    color: "#5a3e1b",
   },
   empty: {
     alignItems: "center",
@@ -118,7 +138,8 @@ const styles = StyleSheet.create({
   },
   emptyText: {
     fontSize: 16,
-    color: "#aaa",
+    color: "#7a5c30",
+    fontWeight: "500",
   },
   footer: {
     flexDirection: "row",
@@ -130,16 +151,19 @@ const styles = StyleSheet.create({
     padding: 14,
     borderRadius: 12,
     alignItems: "center",
+    borderWidth: 1.5,
   },
   btnSecondary: {
-    backgroundColor: "#e0e0e0",
+    backgroundColor: "rgba(255, 240, 150, 0.82)",
+    borderColor: "#e8c84a",
   },
   btnDanger: {
-    backgroundColor: "#ff4d4d",
+    backgroundColor: "#c47a10",
+    borderColor: "#a05e08",
   },
   btnText: {
     fontWeight: "600",
-    color: "#1a1a1a",
+    color: "#5a3e1b",
     fontSize: 14,
   },
 });

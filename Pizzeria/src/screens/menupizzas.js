@@ -1,5 +1,15 @@
 import React, { useState } from "react";
-import { View, Text, TextInput, Pressable, StyleSheet,Alert,ScrollView, Modal} from "react-native";
+import {
+  View,
+  Text,
+  TextInput,
+  Pressable,
+  StyleSheet,
+  Alert,
+  ScrollView,
+  Modal,
+  ImageBackground,
+} from "react-native";
 import { useOrders } from "../context/OrdersContext";
 
 const CustomComboBox = ({ label, options, value, onSelect, placeholder }) => {
@@ -8,25 +18,35 @@ const CustomComboBox = ({ label, options, value, onSelect, placeholder }) => {
   return (
     <View style={styles.comboContainer}>
       <Text style={styles.label}>{label}</Text>
-      <Pressable
-        style={styles.input}
-        onPress={() => setModalVisible(true)}
-      >
-        <Text style={{ color: value ? "#1a1a1a" : "#aaa", fontSize: 16 }}>
+      <Pressable style={styles.input} onPress={() => setModalVisible(true)}>
+        <Text style={{ color: value ? "#5a3e1b" : "#aaa", fontSize: 16 }}>
           {value || placeholder}
         </Text>
       </Pressable>
 
       <Modal transparent={true} visible={modalVisible} animationType="fade">
-        <Pressable style={styles.modalOverlay} onPress={() => setModalVisible(false)}>
+        <Pressable
+          style={styles.modalOverlay}
+          onPress={() => setModalVisible(false)}
+        >
           <View style={styles.modalContent}>
             <Text style={styles.modalTitle}>Selecciona una opción</Text>
             {options.map((opcion, index) => (
-              <Pressable  key={index} style={styles.modalOption} onPress={() => { onSelect(opcion); setModalVisible(false); }}>
+              <Pressable
+                key={index}
+                style={styles.modalOption}
+                onPress={() => {
+                  onSelect(opcion);
+                  setModalVisible(false);
+                }}
+              >
                 <Text style={styles.modalOptionText}>{opcion}</Text>
               </Pressable>
             ))}
-            <Pressable style={styles.modalCancel} onPress={() => setModalVisible(false)}>
+            <Pressable
+              style={styles.modalCancel}
+              onPress={() => setModalVisible(false)}
+            >
               <Text style={styles.modalCancelText}>Cancelar</Text>
             </Pressable>
           </View>
@@ -44,7 +64,11 @@ export default function OrdenarScreen({ navigation }) {
 
   const { addOrder } = useOrders();
 
-  const opcionesPizzas = ["Pato Especial", "Patitos Peperoni", "Patos Hawaianos"];
+  const opcionesPizzas = [
+    "Pato Especial",
+    "Patitos Peperoni",
+    "Patos Hawaianos",
+  ];
   const opcionesTamanos = ["Chica (CH)", "Mediana (M)", "Grande (G)"];
 
   const validarCampos = () => {
@@ -60,23 +84,17 @@ export default function OrdenarScreen({ navigation }) {
       Alert.alert("Error", "La cantidad no puede ir vacía");
       return false;
     }
-
     const cantidadNum = parseInt(cantidad);
     if (isNaN(cantidadNum) || cantidadNum <= 0) {
       Alert.alert("Error", "La cantidad debe ser un número positivo");
       return false;
     }
-
     return true;
   };
 
   const guardarOrden = () => {
-    if (!validarCampos()) {
-      return;
-    }
-
+    if (!validarCampos()) return;
     setCargando(true);
-
     setTimeout(() => {
       setCargando(false);
       Alert.alert(
@@ -84,88 +102,95 @@ export default function OrdenarScreen({ navigation }) {
         `Orden guardada:\n${cantidad} pizza(s) ${tamano} de ${tipo}`,
         [
           {
-            text: "OK", onPress: () => {setTipo(""); setTamano(""); setCantidad(""); navigation.navigate("Ordenes");
-             },
+            text: "OK",
+            onPress: () => {
+              setTipo("");
+              setTamano("");
+              setCantidad("");
+              navigation.navigate("Ordenes");
+            },
           },
-        ]
+        ],
       );
     }, 1000);
-
     addOrder(tipo, tamano, cantidad);
   };
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.title}>PATIORDEN</Text>
+    <ImageBackground
+      source={require("./patito2.jpg")}
+      style={styles.background}
+      resizeMode="cover"
+    >
+      <ScrollView contentContainerStyle={styles.container}>
+        <Text style={styles.title}>PATIORDEN</Text>
 
-      <View style={styles.card}>
-        <CustomComboBox
-          label="Tipo de pizza:"
-          placeholder="Toca para seleccionar..."
-          options={opcionesPizzas}
-          value={tipo}
-          onSelect={setTipo}
-        />
+        <View style={styles.card}>
+          <CustomComboBox
+            label="Tipo de pizza:"
+            placeholder="Toca para seleccionar..."
+            options={opcionesPizzas}
+            value={tipo}
+            onSelect={setTipo}
+          />
+          <CustomComboBox
+            label="Tamaño:"
+            placeholder="Toca para seleccionar..."
+            options={opcionesTamanos}
+            value={tamano}
+            onSelect={setTamano}
+          />
+          <Text style={styles.label}>Cantidad:</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Escribe cuántas (ej. 2)"
+            placeholderTextColor="#a89070"
+            value={cantidad}
+            onChangeText={(text) => setCantidad(text.replace(/[^0-9]/g, ""))}
+            keyboardType="numeric"
+          />
+        </View>
 
-        <CustomComboBox
-          label="Tamaño:"
-          placeholder="Toca para seleccionar..."
-          options={opcionesTamanos}
-          value={tamano}
-          onSelect={setTamano}
-        />
+        <View style={styles.botonesContainer}>
+          <Pressable
+            style={[styles.btn, styles.btnGuardar]}
+            onPress={guardarOrden}
+            disabled={cargando}
+          >
+            <Text style={styles.btnTexto}>
+              {cargando ? "GUARDANDO..." : "GUARDAR ORDEN"}
+            </Text>
+          </Pressable>
+          <Pressable
+            style={[styles.btn, styles.btnLimpiar]}
+            onPress={() => {
+              setTipo("");
+              setTamano("");
+              setCantidad("");
+            }}
+          >
+            <Text style={styles.btnTexto}>LIMPIAR</Text>
+          </Pressable>
+        </View>
 
-        <Text style={styles.label}>Cantidad:</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Escribe cuántas (ej. 2)"
-          value={cantidad}
-          onChangeText={(text) => {
-            const soloNumeros = text.replace(/[^0-9]/g, "");
-            setCantidad(soloNumeros);
-          }}
-          keyboardType="numeric"
-        />
-      </View>
-
-      <View style={styles.botonesContainer}>
         <Pressable
-          style={[styles.btn, styles.btnGuardar]}
-          onPress={guardarOrden}
-          disabled={cargando}
+          style={styles.exit}
+          onPress={() => navigation.replace("Login")}
         >
-          <Text style={styles.btnTexto}>
-            {cargando ? "GUARDANDO..." : "GUARDAR ORDEN"}
-          </Text>
+          <Text style={styles.exitText}>SALIR</Text>
         </Pressable>
-
-        <Pressable
-          style={[styles.btn, styles.btnLimpiar]}
-          onPress={() => {
-            setTipo("");
-            setTamano("");
-            setCantidad("");
-          }}
-        >
-          <Text style={styles.btnTexto}>LIMPIAR</Text>
-        </Pressable>
-      </View>
-
-      <Pressable
-        style={styles.exit}
-        onPress={() => navigation.replace("Login")}
-      >
-        <Text style={styles.exitText}>SALIR</Text>
-      </Pressable>
-    </ScrollView>
+      </ScrollView>
+    </ImageBackground>
   );
 }
 
 const styles = StyleSheet.create({
+  background: {
+    flex: 1,
+  },
   container: {
     padding: 20,
     paddingTop: 50,
-    backgroundColor: "#f8f8f8",
     flexGrow: 1,
   },
   title: {
@@ -173,13 +198,15 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     marginBottom: 30,
     textAlign: "center",
-    color: "#2c3e50",
+    color: "#5a3e1b",
   },
   card: {
-    backgroundColor: "white",
+    backgroundColor: "rgba(255, 240, 150, 0.82)",
     padding: 20,
     borderRadius: 15,
     marginBottom: 25,
+    borderWidth: 1.5,
+    borderColor: "#e8c84a",
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
@@ -190,21 +217,21 @@ const styles = StyleSheet.create({
     fontSize: 16,
     marginBottom: 5,
     marginTop: 10,
-    color: "#34495e",
-    fontWeight: "500",
+    color: "#5a3e1b",
+    fontWeight: "600",
   },
   input: {
-    borderWidth: 1,
-    borderColor: "#ddd",
+    borderWidth: 1.5,
+    borderColor: "#e8c84a",
     borderRadius: 10,
     padding: 14,
     fontSize: 16,
-    backgroundColor: "#fafafa",
+    backgroundColor: "rgba(255,252,220,0.9)",
+    color: "#5a3e1b",
   },
   comboContainer: {
     marginBottom: 5,
   },
-  // Estilos del Modal (Combobox)
   modalOverlay: {
     flex: 1,
     backgroundColor: "rgba(0,0,0,0.5)",
@@ -212,14 +239,12 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   modalContent: {
-    backgroundColor: "white",
+    backgroundColor: "#fffde7",
     width: "80%",
     borderRadius: 15,
     padding: 20,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
+    borderWidth: 1.5,
+    borderColor: "#e8c84a",
     elevation: 5,
   },
   modalTitle: {
@@ -227,22 +252,22 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     marginBottom: 15,
     textAlign: "center",
-    color: "#2c3e50",
+    color: "#5a3e1b",
   },
   modalOption: {
     paddingVertical: 15,
     borderBottomWidth: 1,
-    borderBottomColor: "#eee",
+    borderBottomColor: "#e8c84a",
   },
   modalOptionText: {
     fontSize: 16,
     textAlign: "center",
-    color: "#34495e",
+    color: "#5a3e1b",
   },
   modalCancel: {
     marginTop: 15,
     paddingVertical: 12,
-    backgroundColor: "#e74c3c",
+    backgroundColor: "#e8a020",
     borderRadius: 10,
   },
   modalCancelText: {
@@ -251,7 +276,6 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     fontSize: 16,
   },
-  // Estilos de Botones
   botonesContainer: {
     gap: 12,
     marginBottom: 20,
@@ -260,19 +284,18 @@ const styles = StyleSheet.create({
     padding: 15,
     borderRadius: 10,
     alignItems: "center",
-    borderWidth: 1,
-    borderColor: "#ccc",
+    borderWidth: 1.5,
   },
   btnGuardar: {
-    backgroundColor: "#27ae60",
-    borderColor: "#229954",
+    backgroundColor: "#e8a020",
+    borderColor: "#c47a10",
   },
   btnLimpiar: {
-    backgroundColor: "#f39c12",
-    borderColor: "#e67e22",
+    backgroundColor: "rgba(255, 240, 150, 0.9)",
+    borderColor: "#e8c84a",
   },
   btnTexto: {
-    color: "white",
+    color: "#5a3e1b",
     fontWeight: "bold",
     fontSize: 16,
   },
@@ -281,7 +304,10 @@ const styles = StyleSheet.create({
     padding: 12,
     borderRadius: 8,
     alignItems: "center",
-    backgroundColor: "#e74c3c",
+    backgroundColor: "#c47a10",
+    alignSelf: "flex-end",
+    width: "40%",
+    marginBottom: 30,
   },
   exitText: {
     color: "white",

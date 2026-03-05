@@ -1,5 +1,12 @@
 import React, { useState } from "react";
-import { View, Text, TextInput, Pressable, StyleSheet } from "react-native";
+import {
+  View,
+  Text,
+  TextInput,
+  Pressable,
+  StyleSheet,
+  ImageBackground,
+} from "react-native";
 
 export default function LoginScreen({ navigation }) {
   const [usuario, setUsuario] = useState("");
@@ -20,17 +27,20 @@ export default function LoginScreen({ navigation }) {
       setError("Usuario o contraseña incorrectos");
     }
   };
-  const salirDeLaApp = () => {
-    BackHandler.exitApp();
-  };
+
   return (
-    <View style={styles.container}>
+    <ImageBackground
+      source={require("./patito1.jpg")}
+      style={styles.container}
+      resizeMode="cover"
+    >
       <View style={styles.content}>
         <Text style={styles.title}>Bienvenidos a Pizzeria Patitos</Text>
         <Text style={styles.subtitle}>LOG IN</Text>
 
         <TextInput
           placeholder="Usuario"
+          placeholderTextColor="#a0845c"
           value={usuario}
           onChangeText={setUsuario}
           style={styles.input}
@@ -38,6 +48,7 @@ export default function LoginScreen({ navigation }) {
         />
         <TextInput
           placeholder="Contraseña"
+          placeholderTextColor="#a0845c"
           value={contrasena}
           onChangeText={setContrasena}
           style={styles.input}
@@ -57,48 +68,50 @@ export default function LoginScreen({ navigation }) {
           <Text style={styles.btnText}>EXIT</Text>
         </Pressable>
       </View>
-    </View>
+    </ImageBackground>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#f8f8f8",
   },
   content: {
     flex: 1,
     paddingTop: 60,
     paddingHorizontal: 20,
     alignItems: "center",
+    // sin overlay oscuro para ver bien el patito 🐥
   },
   title: {
     fontSize: 18,
     fontWeight: "800",
     textAlign: "center",
     marginBottom: 20,
-    color: "#2c3e50",
+    color: "#3b1f0a", // café oscuro
   },
   subtitle: {
     fontSize: 26,
     fontWeight: "700",
     marginVertical: 20,
-    color: "#2c3e50",
+    color: "#3b1f0a", // café oscuro
   },
   input: {
     width: "100%",
     padding: 12,
-    borderWidth: 1,
-    borderColor: "#ddd",
+    borderWidth: 1.5,
+    borderColor: "#c8a96e", // café dorado
     borderRadius: 10,
     marginBottom: 10,
-    backgroundColor: "white",
+    backgroundColor: "rgba(255,245,220,0.85)", // crema semitransparente
     fontSize: 16,
+    color: "#3b1f0a",
   },
   error: {
     marginTop: 6,
-    color: "red",
+    color: "#7a1a1a",
     fontSize: 14,
+    fontWeight: "600",
   },
   btn: {
     marginTop: 14,
@@ -106,13 +119,13 @@ const styles = StyleSheet.create({
     paddingHorizontal: 18,
     borderRadius: 12,
     borderWidth: 1,
-    borderColor: "#ccc",
-    backgroundColor: "#27ae60",
+    borderColor: "#a0845c",
+    backgroundColor: "#c8860a", // naranja/café acorde al patito
     width: "100%",
     alignItems: "center",
   },
   exit: {
-    backgroundColor: "#e74c3c",
+    backgroundColor: "#7a3b0a", // café oscuro para EXIT
     alignSelf: "flex-end",
     marginTop: 30,
     width: "auto",
